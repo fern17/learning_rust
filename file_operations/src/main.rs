@@ -8,15 +8,22 @@ fn main() {
     for argument in args.iter() {
         println!("- {argument}");
     }
-    let mut filename = String::from("src/file.txt");
+    let mut in_filename = String::from("src/file.txt");
     if args.len() > 1 {
-        filename = args[1].clone(); // cannot borrow, so we clone
+        in_filename = args[1].clone(); // cannot borrow, so we clone
+    }
+    let mut out_filename = String::from("src/file_copy.txt");
+    if args.len() > 2 {
+        out_filename = args[2].clone();
     }
 
-    let mut file = File::open(filename).expect("Can't open file");
+    let mut in_file = File::open(in_filename).expect("Can't open file");
     let mut contents = String::new();
-    file.read_to_string(&mut contents)
+    in_file.read_to_string(&mut contents)
         .expect("Failed to read contents");
 
     println!("File Contents:\n\n{}", contents);
+
+    let mut out_file = File::create(out_filename).expect("Could not create file");
+    out_file.write_all(contents.as_bytes()).expect("Could not write to file");
 }

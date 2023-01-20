@@ -242,6 +242,13 @@ fn main() {
 }
 ```
 
+Writing to a file:
+```
+let mut contents = String::new();
+let mut out_file = File::create("src/file_copy.txt").expect("Could not create file");
+out_file.write_all(contents.as_bytes()).expect("Could not write to file");
+```
+
 Retrieving arguments:
 ```
 let args: Vec<String> = env::args().collect();
