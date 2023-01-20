@@ -21,6 +21,12 @@ impl Rectangle {
     }
 }
 
+impl ToString for Rectangle {
+    fn to_string(&self) -> String {
+        return format!("Width: {}, Height {}", self.width, self.height)
+    }
+}
+
 fn main() {
     let bg = Color {red: 255, green: 70, blue: 50};
     println!("BG: R: {} G: {} B: {}", bg.red, bg.green, bg.blue);
@@ -36,6 +42,7 @@ fn main() {
     let rectangle = Rectangle{width: 10, height: 30};
     rectangle.print_description();
     println!("Rectangle is square ? {}", rectangle.is_square());
+    println!("{}", rectangle.to_string());
 }
 
 fn print_color(c: &Color) {
