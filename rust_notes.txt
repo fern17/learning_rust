@@ -181,6 +181,24 @@ let bg = Color {red: 255, green: 70, blue: 50};
 println!("BG: R: {} G: {} B: {}", bg.red, bg.green, bg.blue);
 ```
 
+Add methods to a structure:
+```
+struct Rectangle {
+    width: u32,
+    height: u32
+}
+
+impl Rectangle {
+    fn print_description(&self) {
+        println!("Rectangle: {} x {}", self.width, self.height);
+    }
+
+    fn is_square(&self) -> bool{
+        self.width == self.height
+    }
+}
+```
+
 Arrays:
 ```
 let numbers1: [i32; 5] = [1, 2, 3, 4, 5];
