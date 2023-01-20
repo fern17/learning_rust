@@ -180,3 +180,18 @@ struct Color {
 let bg = Color {red: 255, green: 70, blue: 50};
 println!("BG: R: {} G: {} B: {}", bg.red, bg.green, bg.blue);
 ```
+
+Arrays:
+```
+let numbers1: [i32; 5] = [1, 2, 3, 4, 5];
+let numbers2 = [2; 20];
+
+for n in numbers1.iter() {
+    println!("{}", n);
+}
+
+for i in 0..numbers2.len() {
+    println!("{}", numbers2[i]);
+}
+}
+```
