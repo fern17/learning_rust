@@ -24,4 +24,15 @@ fn main() {
     let ref_to_x = &mut mutable_x; // when x is mutable bound, we cannot access it anymore until the reference is gone out of scope
     *ref_to_x += 1;
     println!("What was 10 is now: {ref_to_x}");
+
+    let mut my_string = String::from("How it is going?");
+    println!("This is my string: {}", my_string);
+    println!("Lenght: {}", my_string.len());
+    println!("Is empty: {}", my_string.is_empty());
+    println!("Split string:");
+    for token in my_string.split_whitespace() {
+        println!("{token}");
+    }
+    my_string.push_str(" Welcome to your tutorial");
+    println!("{my_string}");
 }
