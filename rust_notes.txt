@@ -1,0 +1,158 @@
+Rust notes
+
+Create a new project:
+$ cargo new application_name --bin
+(cannot start with digits)
+
+`Cargo.toml` is the configuration file
+
+Compile with cargo
+$ cd application_name
+$ cargo run
+
+Manuall Compile: 
+$ rustc main.rs
+
+Manuall Run:
+$ ./main.exe
+
+Print into console:
+`println!("Hello, world!");`
+Print variable in console:
+`println!("The value of x is {}", x);`
+`println!("The value of x is {x}");`
+
+Variables:
+`let x = 45;`
+By default, all variables are immutable
+To make them mutable, use the `mut` keyword:
+`let mut x = 45;`
+
+Constants:
+`const LIMIT_NUMBER : i32 = 30;` (global scope)
+
+Datatypes:
+```
+let x: u64 = 45; // unsigned integer
+let f: f32 = 6.7; // floating point
+let b: bool = true; // boolean
+```
+
+If conditions:
+```
+let n : i32 = 35;
+let limit : i32 = 30;
+if n < 30 {
+    println!("The number is less than {}", limit);
+} else {
+    println!("The number is greater than {}", limit);
+    }
+```
+
+Loops:
+Infinite loop
+```
+let mut n = 0;
+loop {
+    n += 1;
+    
+    if n == 7 {
+        continue;
+    }
+
+    if n > 10 {
+        break;
+    }
+    println!("n = {}", n);
+}
+```
+While loop:
+```
+let mut v = 1;
+while v <= 50 {
+    if v % 5 == 0 {
+        println!("v = {}", v);
+    }
+    v += 1;
+}
+```
+
+For loop:
+```
+let numbers = 30..51; // range => iterator
+for i in numbers {
+    println!("i = {}", i);
+}
+// We can loop in vectors, but we need to use iter to obtain an iterator
+// With enumerate we obtain the index, and it returns a tuple
+let animals = vec!["Dog", "Cat", "Bird"];
+for (index, a) in animals.iter().enumerate() {
+    println!("{}: {}", index, a);
+}
+```
+
+Enums:
+```
+enum Direction {
+    Up, 
+    Down,
+    Left,
+    Right
+}
+
+let player_direction : Direction = Direction::Up;
+match player_direction {
+    Direction::Up => println!("We are heading up"),
+    Direction::Down => println!("We are heading down"),
+    Direction::Left => println!("We are heading left"),
+    Direction::Right => println!("We are heading right"),
+}
+```
+
+Tuples:
+```
+let tup1 = (x, f, b, 50, (1, 2, 3)); // different types are possible
+    
+println!("{}", tup1.2);
+println!("{}", (tup1.4).1); // nested tuple access
+
+// assign tuple values to separate variables
+let (ta, tb, tc) = tup1.4;
+    println!("{ta}, {tb}, {tc}");
+```
+
+String:
+Create a string type growable UTF-8 encoded
+`let mut my_str = String::new();`
+
+Import a library:
+`use std::io;`
+
+Reading input:
+```
+let mut v = String::new()
+io::stdin() // return a handle to get input from the user
+    .read_line(&mut v) // call and store in v (passed by reference), returns an enum Result type (OK or Err)
+    .expect("Failed to read value"); // if read_line returned Err, run the expect part
+```
+
+Crates:
+A crate is a collection of Rust source code files
+A project is a binary crate (executable)
+To add a crate, list it in the dependencies section of the Cargo.toml file
+```
+[dependencies]
+rand = "^0.8.5"
+```
+After adding a crate dependency, Rust will fetch and compile said crate
+The fetched versions are also saved in the Cargo.lock file to ensure reproducible builds
+If one wants to update the crates, one can run `cargo update`
+
+Random numbers:
+```
+use rand::Rng;
+let secret_number = rand::thread_rng().gen_range(1..=100);  // generates a number in the current thread in [1, 100]
+```
+
+Generate documentation for the project and its dependencies:
+`cargo doc --open`
