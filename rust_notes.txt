@@ -170,3 +170,13 @@ use rand::Rng;
 let secret_number = rand::thread_rng().gen_range(1..=100);  // generates a number in the current thread in [1, 100]
 ```
 
+Structures:
+```
+struct Color {
+    red: u8,
+    green: u8,
+    blue: u8,
+}
+let bg = Color {red: 255, green: 70, blue: 50};
+println!("BG: R: {} G: {} B: {}", bg.red, bg.green, bg.blue);
+```
