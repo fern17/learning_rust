@@ -1,32 +1,48 @@
 Rust notes
 
 Create a new project:
-$ cargo new application_name --bin
+`$ cargo new application_name --bin`
 (cannot start with digits)
 
 `Cargo.toml` is the configuration file
 
 Compile with cargo
+```
 $ cd application_name
 $ cargo run
+```
 
 Manuall Compile: 
-$ rustc main.rs
+`$ rustc main.rs`
 
-Manuall Run:
-$ ./main.exe
+Manual Run:
+`$ ./main.exe`
+
+Generate documentation for the project and its dependencies:
+`cargo doc --open`
 
 Print into console:
 `println!("Hello, world!");`
-Print variable in console:
-`println!("The value of x is {}", x);`
-`println!("The value of x is {x}");`
+Print variable:
+`println!("The value of x is {x}");`  (only if x is not an expression)
+`println!("The value of x+y is {}", x + y);`
 
 Variables:
 `let x = 45;`
 By default, all variables are immutable
 To make them mutable, use the `mut` keyword:
 `let mut x = 45;`
+
+Mutable references:
+```
+let mut mutable_x = 10;
+let ref_to_x = &mut mutable_x; // when x is mutable bound, we cannot access it anymore until the reference is gone out of scope
+*ref_to_x += 1;
+println!("What was 10 is now: {ref_to_x}");
+```
+There are some rules: any borrow must last for a scope no greater than that of the owner and you may have only one of:
+ - one or more references (&T) to a resource
+ - exactly one mutable reference (&mut T)
 
 Constants:
 `const LIMIT_NUMBER : i32 = 30;` (global scope)
@@ -154,5 +170,3 @@ use rand::Rng;
 let secret_number = rand::thread_rng().gen_range(1..=100);  // generates a number in the current thread in [1, 100]
 ```
 
-Generate documentation for the project and its dependencies:
-`cargo doc --open`

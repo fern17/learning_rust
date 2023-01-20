@@ -1,0 +1,9 @@
+Multiple samples on how to write code with Rust
+(tested under Windows 10 only)
+
+Installation:
+Download and execute rustup-init.exe (x64) from https://www.rust-lang.org/tools/install
+
+Resources:
+Official documentation book: https://doc.rust-lang.org/book/
+Rust programming tutorials from dcode: https://www.youtube.com/@dcode-software

@@ -19,4 +19,9 @@ fn main() {
     // assign tuple values to separate variables
     let (ta, tb, tc) = tup1.4;
     println!("{ta}, {tb}, {tc}");
+
+    let mut mutable_x = 10;
+    let ref_to_x = &mut mutable_x; // when x is mutable bound, we cannot access it anymore until the reference is gone out of scope
+    *ref_to_x += 1;
+    println!("What was 10 is now: {ref_to_x}");
 }
