@@ -199,6 +199,36 @@ impl Rectangle {
 }
 ```
 
+Traits of a structure:
+Define a bundle of functions for structs to implement. 
+One benefit of traits is you can use them for typing. 
+You can create functions that can be used by any structs that implement the same trait.
+They are also useful for composition.
+```
+struct Person {
+    name: String,
+    age: u8
+}
+
+trait HasVoiceBox {
+    fn speak(&self);
+    fn can_speak(&self) -> bool;
+}
+
+impl HasVoiceBox for Person {
+    fn speak(&self) {
+        println!("Hello, my name is {}", self.name);
+    }
+
+    fn can_speak(&self) -> bool {
+        if self.age > 0 {
+            return true;
+        }
+        return false;
+    }
+}
+```
+
 Arrays:
 ```
 let numbers1: [i32; 5] = [1, 2, 3, 4, 5];

@@ -27,22 +27,56 @@ impl ToString for Rectangle {
     }
 }
 
+struct Person {
+    name: String,
+    age: u8
+}
+
+trait HasVoiceBox {
+    fn speak(&self);
+    fn can_speak(&self) -> bool;
+}
+
+impl HasVoiceBox for Person {
+    fn speak(&self) {
+        println!("Hello, my name is {}", self.name);
+    }
+
+    fn can_speak(&self) -> bool {
+        if self.age > 0 {
+            return true;
+        }
+        return false;
+    }
+}
+
 fn main() {
-    let bg = Color {red: 255, green: 70, blue: 50};
-    println!("BG: R: {} G: {} B: {}", bg.red, bg.green, bg.blue);
-    //bg.blue = 45; // immutable!
-    let mut mutable_bg = Color {red: 0, green: 0, blue: 57};
-    print_color(&mutable_bg);
-    mutable_bg.red = 100;
-    print_color(&mutable_bg);
+    {
+        let bg = Color {red: 255, green: 70, blue: 50};
+        println!("BG: R: {} G: {} B: {}", bg.red, bg.green, bg.blue);
+        //bg.blue = 45; // immutable!
+        let mut mutable_bg = Color {red: 0, green: 0, blue: 57};
+        print_color(&mutable_bg);
+        mutable_bg.red = 100;
+        print_color(&mutable_bg);
 
-    let red = ColorTuple(255, 0, 0);
-    println!("Red is {} {} {}", red.0, red.1, red.2);
+        let red = ColorTuple(255, 0, 0);
+        println!("Red is {} {} {}", red.0, red.1, red.2);
+    }
 
-    let rectangle = Rectangle{width: 10, height: 30};
-    rectangle.print_description();
-    println!("Rectangle is square ? {}", rectangle.is_square());
-    println!("{}", rectangle.to_string());
+    {
+        let rectangle = Rectangle{width: 10, height: 30};
+        rectangle.print_description();
+        println!("Rectangle is square ? {}", rectangle.is_square());
+        println!("{}", rectangle.to_string());
+    }
+
+    {
+        let person1 = Person {name: String::from("Peter"), age: 41};
+        let person2 = Person {name: String::from("Bob"), age: 0};
+        println!("Can {} speak ? {}", person1.name, person1.can_speak());
+        println!("Can {} speak ? {}", person2.name, person2.can_speak());
+    }
 }
 
 fn print_color(c: &Color) {
