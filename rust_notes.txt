@@ -258,6 +258,29 @@ for number in my_vector1.iter() {
 ```
 Note: when copying values of a vector, we need to use the `clone` method because we cannot borrow the individual values
 
+Hash maps:
+```
+use std::collections::HashMap;
+fn main() {
+    let mut marks = HashMap::new();
+    marks.insert("Rust".to_string(), 59);
+    marks.insert("C++".to_string(), 96);
+    marks.insert("Python".to_string(), 65);
+    println!("How many marks are there? {}", marks.len());
+    
+    match marks.get("C++") {
+        Some(mark) => println!("{}: {}", "C++", mark),
+        None => println!("You don't know {}", "C++")
+    }
+
+    marks.remove("Python");
+    for (subject, mark) in &marks {
+        println!("For {} you got {}", subject, mark);
+    }
+
+    println!("Did you study C++? {}", marks.contains_key("C++"));
+```
+
 Reading a file:
 ```
 use std::fs::File; // struct for the file
