@@ -60,4 +60,13 @@ fn main() {
         Direction::Left => println!("We are heading left"),
         Direction::Right => println!("We are heading right"),
     }
+
+    println!("Match and pattern matching");
+    let number_to_match = 11;
+    match number_to_match {
+        1 => println!("This is one"),
+        2 | 3 => println!("This is two or three"),
+        4..=20 => println!("Between 4 and 20"),
+        _ => println!("I dont know its value"),
+    }
 }
