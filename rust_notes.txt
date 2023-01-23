@@ -1,33 +1,63 @@
-Rust notes
+# Rust notes
 
-Create a new project:
+## Common ideas:
+References in Rust don't keep things alive. There is no garbage collector.
+- Shared reference: &t (const pointer)
+- Mutable (UNIQUE) reference: &mut t (non-const pointer)
+References are always valid, no dangling or null pointers
+Mutable references are unique
+Borrowing : taking a pointer
+
+## Project management 
+### Create a new project
 `$ cargo new application_name --bin`
 (cannot start with digits)
 
 `Cargo.toml` is the configuration file
 
-Compile with cargo
+### Compile with cargo
 ```
 $ cd application_name
 $ cargo run
 ```
 
-Manuall Compile: 
+### Manual Compile: 
 `$ rustc main.rs`
 
-Manual Run:
+### Manual Run:
 `$ ./main.exe`
 
-Generate documentation for the project and its dependencies:
+### Generate documentation for the project and its dependencies:
 `cargo doc --open`
 
-Print into console:
+## Input and Output
+### Print into console:
 `println!("Hello, world!");`
 Print variable:
 `println!("The value of x is {x}");`  (only if x is not an expression)
 `println!("The value of x+y is {}", x + y);`
 
-Variables:
+### Debug printing:
+dgb!(*variable)
+
+### Retrieving arguments:
+```
+let args: Vec<String> = env::args().collect();
+println!("Running with arguments:");
+for argument in args.iter() {
+    println!("- {argument}");
+}
+```
+
+## Reading input:
+```
+let mut v = String::new()
+io::stdin() // return a handle to get input from the user
+    .read_line(&mut v) // call and store in v (passed by reference), returns an enum Result type (OK or Err)
+    .expect("Failed to read value"); // if read_line returned Err, run the expect part
+```
+
+## Variables:
 `let x = 45;`
 By default, all variables are immutable
 To make them mutable, use the `mut` keyword:
@@ -54,7 +84,8 @@ let f: f32 = 6.7; // floating point
 let b: bool = true; // boolean
 ```
 
-If conditions:
+## Control structures
+### If
 ```
 let n : i32 = 35;
 let limit : i32 = 30;
@@ -65,8 +96,7 @@ if n < 30 {
     }
 ```
 
-Loops:
-Infinite loop
+### Infinite loop
 ```
 let mut n = 0;
 loop {
@@ -82,7 +112,8 @@ loop {
     println!("n = {}", n);
 }
 ```
-While loop:
+
+### While loop:
 ```
 let mut v = 1;
 while v <= 50 {
@@ -93,7 +124,7 @@ while v <= 50 {
 }
 ```
 
-For loop:
+### For loop:
 ```
 let numbers = 30..51; // range => iterator
 for i in numbers {
@@ -107,7 +138,7 @@ for (index, a) in animals.iter().enumerate() {
 }
 ```
 
-Enums:
+### Enums:
 ```
 enum Direction {
     Up, 
@@ -125,7 +156,31 @@ match player_direction {
 }
 ```
 
-Tuples:
+Match and option:
+```
+fn main() {
+    find_occupation("Fernando");
+    find_occupation("Joseph");
+    find_occupation("Mary");
+}
+
+fn find_occupation(name: &str) {
+    println!("Occupation for {}: {}", name, match get_occupation(name) {
+        Some(occ) => occ,
+        None => "Occupation not found",
+    });
+}
+
+fn get_occupation(name: &str) -> Option<&str> {
+    match name {
+        "Fernando" => Some("Software engineer"),
+        "Joseph" => Some("Taxi driver"),
+        _ => None,
+    }
+}
+```
+
+## Tuples:
 ```
 let tup1 = (x, f, b, 50, (1, 2, 3)); // different types are possible
     
@@ -137,22 +192,14 @@ let (ta, tb, tc) = tup1.4;
     println!("{ta}, {tb}, {tc}");
 ```
 
-String:
+## String:
 Create a string type growable UTF-8 encoded
 `let mut my_str = String::new();`
 
-Import a library:
+## Libraries:
 `use std::io;`
 
-Reading input:
-```
-let mut v = String::new()
-io::stdin() // return a handle to get input from the user
-    .read_line(&mut v) // call and store in v (passed by reference), returns an enum Result type (OK or Err)
-    .expect("Failed to read value"); // if read_line returned Err, run the expect part
-```
-
-Crates:
+## Crates:
 A crate is a collection of Rust source code files
 A project is a binary crate (executable)
 To add a crate, list it in the dependencies section of the Cargo.toml file
@@ -170,7 +217,7 @@ use rand::Rng;
 let secret_number = rand::thread_rng().gen_range(1..=100);  // generates a number in the current thread in [1, 100]
 ```
 
-Structures:
+## Structures:
 ```
 struct Color {
     red: u8,
@@ -181,7 +228,7 @@ let bg = Color {red: 255, green: 70, blue: 50};
 println!("BG: R: {} G: {} B: {}", bg.red, bg.green, bg.blue);
 ```
 
-Add methods to a structure:
+### Add methods to a structure:
 ```
 struct Rectangle {
     width: u32,
@@ -199,7 +246,7 @@ impl Rectangle {
 }
 ```
 
-Traits of a structure:
+### Traits of a structure:
 Define a bundle of functions for structs to implement. 
 One benefit of traits is you can use them for typing. 
 You can create functions that can be used by any structs that implement the same trait.
@@ -229,7 +276,7 @@ impl HasVoiceBox for Person {
 }
 ```
 
-Arrays:
+## Arrays:
 ```
 let numbers1: [i32; 5] = [1, 2, 3, 4, 5];
 let numbers2 = [2; 20];
@@ -244,7 +291,7 @@ for i in 0..numbers2.len() {
 }
 ```
 
-Vectors:
+## Vectors:
 ```
 let mut my_vector1: Vec<i32> = Vec::new();
 let mut my_vector2 = vec![1,2,3,4];
@@ -281,7 +328,7 @@ fn main() {
     println!("Did you study C++? {}", marks.contains_key("C++"));
 ```
 
-Modules:
+## Modules:
 ```
 mod my_mod {
     pub fn print_external() {
@@ -316,8 +363,8 @@ fn main() {
     module_in_file::print_another_file();
 }
 ```
-
-Reading a file:
+## Files:
+### Reading a file:
 ```
 use std::fs::File; // struct for the file
 use std::io::prelude::*;
@@ -331,18 +378,9 @@ fn main() {
 }
 ```
 
-Writing to a file:
+### Writing to a file:
 ```
 let mut contents = String::new();
 let mut out_file = File::create("src/file_copy.txt").expect("Could not create file");
 out_file.write_all(contents.as_bytes()).expect("Could not write to file");
-```
-
-Retrieving arguments:
-```
-let args: Vec<String> = env::args().collect();
-println!("Running with arguments:");
-for argument in args.iter() {
-    println!("- {argument}");
-}
 ```
