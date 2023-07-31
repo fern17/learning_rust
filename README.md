@@ -2,21 +2,22 @@
 Multiple samples on how to write code with Rust
 (tested under Windows 10 only)
 
-## Resources:
+## Resources
 - Official documentation book: https://doc.rust-lang.org/book/
 - Rust programming tutorials from dcode: https://www.youtube.com/@dcode-software
 - A Firehose of Rust for busy people who know some C++: [https://www.youtube.com/watch?v=FSyfZVuD32Y]
 
-## TODO: 
+## TODO
 - annotations and lifetimes
 - lambdas and closures
 - multi threading and mutexes
+- trait system
 
-## Installation:
+## Installation
 ### Windows:
 Download and execute rustup-init.exe (x64) from https://www.rust-lang.org/tools/install
 
-## Common ideas
+## General ideas of the language
 References in Rust don't keep things alive. There is no garbage collector.
 - Shared reference: `&t` (const pointer)
 - Mutable (UNIQUE) reference: `&mut t` (non-const pointer)
@@ -24,8 +25,13 @@ References are always valid, no dangling or null pointers
 Mutable references are unique
 Borrowing = taking a pointer
 
+Plain data types (i32, &T) have the `Copy` trait.
+By value operations on `Copy` types are bitwise copies (like in C)
+Other types are non-`Copy`. By-value operations in non-`Copy` types are moves,
+which are destructive bitwise copies.
+
 ## Project management 
-### Create a new project
+### Create a new project:
 ```
 $ cargo new application_name --bin
 ```
@@ -33,7 +39,7 @@ $ cargo new application_name --bin
 
 `Cargo.toml` is the configuration file
 
-### Compile with cargo
+### Compile with cargo:
 ```
 $ cd application_name
 $ cargo run
@@ -136,9 +142,15 @@ let (ta, tb, tc) = tup1.4;
 ```
 
 ### Strings:
-Create a string type growable UTF-8 encoded
+#### Create a string type growable UTF-8 encoded:
 ```rust
 let mut my_str = String::new();
+```
+
+#### Copy a string:
+```rust
+let s1 = "mystring".to_string();
+let s2 = s1.clone();
 ```
 
 ### Enums:
@@ -271,7 +283,7 @@ fn main() {
 ```
 
 ## Control structures
-### If
+### If:
 ```rust
 let n : i32 = 35;
 let limit : i32 = 30;
@@ -282,7 +294,7 @@ if n < 30 {
     }
 ```
 
-### Infinite loop
+### Infinite loop:
 ```rust
 let mut n = 0;
 loop {
@@ -325,37 +337,14 @@ for (index, a) in animals.iter().enumerate() {
 }
 ```
 
-## Match and option:
-```rust
-fn main() {
-    find_occupation("Fernando");
-    find_occupation("Joseph");
-    find_occupation("Mary");
-}
-
-fn find_occupation(name: &str) {
-    println!("Occupation for {}: {}", name, match get_occupation(name) {
-        Some(occ) => occ,
-        None => "Occupation not found",
-    });
-}
-
-fn get_occupation(name: &str) -> Option<&str> {
-    match name {
-        "Fernando" => Some("Software engineer"),
-        "Joseph" => Some("Taxi driver"),
-        _ => None,
-    }
-}
-```
-
-## Libraries:
+## Working with big projects
+### Libraries:
 Import a Library
 ```rust
 use std::io;
 ```
 
-## Crates:
+### Crates:
 A crate is a collection of Rust source code files
 A project is a binary crate (executable)
 To add a crate, list it in the dependencies section of the Cargo.toml file
@@ -404,7 +393,7 @@ fn main() {
 }
 ```
 
-## Files:
+## File handling
 ### Reading a file:
 ```rust
 use std::fs::File; // struct for the file
@@ -426,7 +415,31 @@ let mut out_file = File::create("src/file_copy.txt").expect("Could not create fi
 out_file.write_all(contents.as_bytes()).expect("Could not write to file");
 ```
 
-## Random numbers:
+## Other tools
+### Match and option:
+```rust
+fn main() {
+    find_occupation("Fernando");
+    find_occupation("Joseph");
+    find_occupation("Mary");
+}
+
+fn find_occupation(name: &str) {
+    println!("Occupation for {}: {}", name, match get_occupation(name) {
+        Some(occ) => occ,
+        None => "Occupation not found",
+    });
+}
+
+fn get_occupation(name: &str) -> Option<&str> {
+    match name {
+        "Fernando" => Some("Software engineer"),
+        "Joseph" => Some("Taxi driver"),
+        _ => None,
+    }
+}
+```
+### Random numbers:
 ```rust
 use rand::Rng;
 ...
