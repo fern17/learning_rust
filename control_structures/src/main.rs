@@ -31,6 +31,21 @@ fn main() {
         println!("n = {}", n);
     }
 
+    let mut nn = 0;
+    'counter: loop {
+        let mut decrease = 5;
+        'decrease: loop {
+            if decrease == 4 {
+                break; // breaks inner loop
+            }
+            if nn == 2 {
+                break 'counter; // breaks outer loop
+            }
+            decrease -= 1;
+        }
+        nn += 1;
+    }
+
     println!("While loop");
     let mut v = 1;
     while v <= 50 {

@@ -12,6 +12,7 @@ Multiple samples on how to write code with Rust
 - lambdas and closures
 - multi threading and mutexes
 - trait system
+- fat pointer
 
 ## Installation
 ### Windows:
@@ -21,16 +22,15 @@ Download and execute rustup-init.exe (x64) from https://www.rust-lang.org/tools/
 References in Rust don't keep things alive. There is no garbage collector.
 - Shared reference: `&t` (const pointer)
 - Mutable (UNIQUE) reference: `&mut t` (non-const pointer)
-References are always valid, no dangling or null pointers
-Mutable references are unique
-Borrowing = taking a pointer
+- References are always valid, no dangling or null pointers
+- Mutable references are unique
+- Borrowing = taking a pointer
+- Plain data types (i32, &T) have the `Copy` trait.
+- By value operations on `Copy` types are bitwise copies (like in C)
+- Other types are non-`Copy`. By-value operations in non-`Copy` types are moves, which are destructive bitwise copies.
 
-Plain data types (i32, &T) have the `Copy` trait.
-By value operations on `Copy` types are bitwise copies (like in C)
-Other types are non-`Copy`. By-value operations in non-`Copy` types are moves,
-which are destructive bitwise copies.
-
-## Project management 
+## Project management
+Cargo is Rust compilation and package manager. We use cargo to start a new project, build and run the program, and manage external libraries.
 ### Create a new project:
 ```
 $ cargo new application_name --bin
@@ -70,6 +70,11 @@ Print variable:
 ```rust
 println!("The value of x is {x}"); // (only if x is not an expression)
 println!("The value of x+y is {}", x + y);
+```
+Print array:
+```rust
+let sv1: &[i32] = &my_vector1; // slice of a vector
+println!("{:?}", sv1);
 ```
 
 ### Debug printing:
@@ -152,6 +157,12 @@ let mut my_str = String::new();
 let s1 = "mystring".to_string();
 let s2 = s1.clone();
 ```
+
+#### String slice:
+```rust
+//&str = string slice or stir
+let _str1 = "hello"; // &str type
+``` 
 
 ### Enums:
 ```rust
@@ -256,6 +267,8 @@ my_vector2.remove(1);
 for number in my_vector1.iter() {
     println!("{}", number);
 }
+
+println!("my_vector1 = {:?}", my_vector1);
 ```
 Note: when copying values of a vector, we need to use the `clone` method because we cannot borrow the individual values
 
@@ -297,7 +310,7 @@ if n < 30 {
 ### Infinite loop:
 ```rust
 let mut n = 0;
-loop {
+'loop_label: loop {
     n += 1;
     
     if n == 7 {
@@ -305,7 +318,7 @@ loop {
     }
 
     if n > 10 {
-        break;
+        break 'loop_label; // useful for nested loops
     }
     println!("n = {}", n);
 }
@@ -334,6 +347,19 @@ for i in numbers {
 let animals = vec!["Dog", "Cat", "Bird"];
 for (index, a) in animals.iter().enumerate() {
     println!("{}: {}", index, a);
+}
+```
+
+## Functions
+Have to be named with snake case.
+
+```rust
+fn is_even(num: u32) -> bool {
+    num % 2 == 0 // no semicolon => return value
+}
+
+fn concat_string(s: String) -> String{
+    s + " World!"
 }
 ```
 

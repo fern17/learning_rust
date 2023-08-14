@@ -1,8 +1,16 @@
 fn main() {
+    // Variables are inmutable by default
+    let _inm = 5; // use underscore prefix for unused variable
+    //_inm = 6; // this fails
+
+    // Constants should be declared as UPPER_CASE and cannot be mutated
+    const SECONDS: i8 = 60;
+    println!("The value of seconds is {}", SECONDS);
+
     // mutability of variables
     let mut mutable_variable = 45;
     println!("The value of x is {}", mutable_variable);
-    mutable_variable = 60;
+    mutable_variable = 60; // By declaring it as mut, now this works
     println!("The value of x is {}", mutable_variable);
 
     // Datatypes
@@ -25,7 +33,14 @@ fn main() {
     *ref_to_x += 1;
     println!("What was 10 is now: {ref_to_x}");
 
+    // Strings 
+    // - Are UTF8
+    // - Are allocated in the heap
+    // - Are growable
+    // - Are not null terminated
     let mut my_string = String::from("How it is going?");
+    let my_string2 = "Rust".to_string();
+    println!("{my_string2}");
     println!("This is my string: {}", my_string);
     println!("Lenght: {}", my_string.len());
     println!("Is empty: {}", my_string.is_empty());
@@ -35,4 +50,7 @@ fn main() {
     }
     my_string.push_str(" Welcome to your tutorial");
     println!("{my_string}");
+
+    // &str = string slice or stir
+    let _str1 = "hello"; // &str type
 }

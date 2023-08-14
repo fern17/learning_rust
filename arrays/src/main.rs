@@ -25,4 +25,11 @@ fn main() {
     for number in my_vector2.iter() {
         println!("{}", number);
     }
+
+    // Slices: points to a range of consecutive values
+    let sv1: &[i32] = &my_vector1;
+    let sv2: &[i32] = &my_vector2[1..3];
+
+    println!("{:?}", sv1);
+    println!("{:?}", sv2); // 3, 4
 }
