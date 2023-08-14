@@ -2,7 +2,7 @@
 *.exe
 *.pdb
 *.o
-*/debug/
-*/target/
+/**/debug
+/**/target
 Cargo.lock
 **/*.rs.bk
