@@ -8,7 +8,6 @@ Multiple samples on how to write code with Rust
 - A Firehose of Rust for busy people who know some C++: [https://www.youtube.com/watch?v=FSyfZVuD32Y]
 
 ## TODO
-- annotations and lifetimes
 - lambdas and closures
 - multi threading and mutexes
 - trait system
@@ -182,6 +181,16 @@ match player_direction {
 }
 ```
 
+#### Option enum:
+It is a builtin with the following definition
+```rust
+enum Option<T> {
+    None,
+    Some(T)
+}
+```
+To access the value, use match structure.
+
 ### Structures:
 ```rust
 struct Color {
@@ -295,6 +304,20 @@ fn main() {
     println!("Did you study C++? {}", marks.contains_key("C++"));
 ```
 
+## Ownership
+For types implementing a move (heap)
+```rust
+let x = vec!["hello".to_string()];
+let y = x; // move, x is no longer valid
+let z = y.clone(); // clone: z has the same values as y (previously x). 
+```
+Cloning is an expensive operation because it has to duplicate all values.
+However, for types implementing a copy (stack), we can copy them freely:
+```rust
+let x = 1;
+let y = x; // x and y have the value
+```
+
 ## Control structures
 ### If:
 ```rust
@@ -361,6 +384,15 @@ fn is_even(num: u32) -> bool {
 fn concat_string(s: String) -> String{
     s + " World!"
 }
+```
+
+## Lifetimes annotations
+```rust
+fn example_annotations<'a, 'b>(x: &'a str, y: &'b str) -> &'b str {
+    y
+} // a is lifetime for x, b is lifetime for y. The return value has to match the lifetime of one of the parameters
+
+let s: &'static str = "static lifetime that lives in the binary";
 ```
 
 ## Working with big projects
@@ -450,7 +482,7 @@ fn main() {
     find_occupation("Mary");
 }
 
-fn find_occupation(name: &str) {
+fn find_occupation(name: &str) { // returns an Option enum
     println!("Occupation for {}: {}", name, match get_occupation(name) {
         Some(occ) => occ,
         None => "Occupation not found",

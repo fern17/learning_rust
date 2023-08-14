@@ -31,3 +31,7 @@ fn print_even_numbers(num: u32) {
         }
     }
 }
+
+fn example_annotations<'a, 'b>(x: &'a str, y: &'b str) -> &'b str {
+    y
+}
