@@ -250,6 +250,33 @@ impl HasVoiceBox for Person {
 }
 ```
 
+#### Operator overloading
+```rust
+use std::ops::Add;
+#[derive(Debug)]
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Add for Point<T> 
+    where T: Add<Output = T> {
+        type Output = Self;
+        fn add(self, rhs: Self) -> Self {
+            Point {
+                x: self.x + rhs.x,
+                y: self.y + rhs.y,
+            }
+        }
+    }
+
+fn main() {
+    let coord1 = Point {x: 5.0, y: 2.0};
+    let coord2 = Point {x: 1.0, y: 3.0};
+    let sum = coord1 + coord2;
+    println!("{:?}", sum);
+    }
+```
 ### Arrays:
 ```rust
 let numbers1: [i32; 5] = [1, 2, 3, 4, 5];
@@ -503,3 +530,28 @@ use rand::Rng;
 ...
 let secret_number = rand::thread_rng().gen_range(1..=100);  // generates a number in the current thread in [1, 100]
 ```
+
+
+### Useful traits:
+#### Drop:
+Called when the variable goes out of scope => destructor
+```rust
+impl Drop for StructName {
+    fn drop(&mut self) {
+
+    }
+}
+```
+#### Clone:
+Make a copy of itself or from another object
+```rust
+impl Clone for StructName {
+    fn clone(&self) -> Self
+    fn clone_from(&mut self, source: &Self) {
+        *self = source.clone();
+    }
+}
+```
+
+#### Copy:
+Only available for objects in the stack (not in the heap).
