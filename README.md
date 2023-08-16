@@ -331,6 +331,33 @@ fn main() {
     println!("Did you study C++? {}", marks.contains_key("C++"));
 ```
 
+### Hash sets:
+```rust
+use std::collections::HashSet;
+fn main() {
+    let mut hs = HashSet::new();
+    hs.insert(10);
+    hs.insert(20);
+    hs.insert(30);
+
+    hs.remove(&20);
+
+    let mut hs2 = HashSet::new();
+    hs2.insert(100);
+    hs2.insert(10);
+    hs2.insert(1000);
+    
+    println!("HS1: {:?}", hs);
+    println!("HS2: {:?}", hs2);
+
+    let intersection = &hs & &hs2;
+    println!("Intersection: {:?}", intersection);
+
+    println!("Union: {:?}", &hs | &hs2);
+    println!("Difference: {:?}", &hs - &hs2);
+}
+```
+
 ## Ownership
 For types implementing a move (heap)
 ```rust
@@ -555,3 +582,39 @@ impl Clone for StructName {
 
 #### Copy:
 Only available for objects in the stack (not in the heap).
+
+## Error handling:
+- Use `RUST_BACKTRACE=1` to have the backtrace
+- Unrecoverable errors: use the `panic!("msg")` macro to terminate the current thread.
+
+The Result enum:
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+### Error example:
+```rust
+use std::fs::File;
+use std::io::ErrorKind;
+fn main() {
+    //panic!("Panicked here, exiting main thread");
+    
+    let file = File::open("error.txt");
+    let file = match file {
+        Ok(file) => file,
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("error.txt") {
+                Ok(file_created) => file_created,
+                Err(err) => panic!("cannot create the file"),
+            }
+            _ => panic!("it was some other error kind!"),
+        }
+    };
+
+    let file2 = File::open("error2.txt").expect("Error opening the file");
+}
+```
+
