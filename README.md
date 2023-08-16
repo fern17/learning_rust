@@ -614,7 +614,23 @@ fn main() {
         }
     };
 
-    let file2 = File::open("error2.txt").expect("Error opening the file");
+    //let file2 = File::open("error2.txt").expect("Error opening the file");
+    
+    let test = open_file();
+    test.unwrap();
+
+    rename_file().unwrap();
+}
+
+fn open_file() -> Result<File, Error> {
+    let file = File::open("error.txt")?; // propagates the error
+    Ok(file)
+}
+
+fn rename_file() -> Result<(), Error> {
+    let file = rename("error.txt", "renamed.txt")?;
+    Ok(file)
+}
 }
 ```
 
