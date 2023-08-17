@@ -8,7 +8,7 @@ Multiple samples on how to write code with Rust
 - A Firehose of Rust for busy people who know some C++: [https://www.youtube.com/watch?v=FSyfZVuD32Y]
 
 ## TODO
-- multi threading and mutexes
+
 
 ## Installation
 ### Windows:
@@ -506,6 +506,104 @@ struct Flagger {
     println!("{}", mut_ref);
 // cannot borrow twice, or we need to wrap is_true in a Rc<RefCell<bool>> and use 
 // let reference = Rc::new(flag.is_true.clone());
+```
+
+## Concurrency
+```rust
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    // Create a thread
+    let handle = std::thread::spawn(move || {
+        println!("Hello from a thread!");
+    });
+    // tell main thread to sleep
+    thread::sleep(Duration::from_secs(1)); 
+
+    // waiting until the thread represented by handle is finished
+    handle.join().unwrap(); 
+    println!("Hello from main");
+
+    let v = vec![1, 2, 3];
+    // the move keyword forces the closure to take ownership of the values it uses
+    let h = std::thread::spawn(move || { 
+        println!("{:?}", v)
+    });
+}
+```
+
+### Channels
+Allow to send and receive data between threads. A channel is closed if either the transmitter or the receiver end is dropped.
+
+
+```rust
+let (transmitter, receiver) = mpsc::channel(); // multi producer, single consumer
+    let tx = transmitter.clone(); // another transmitter that can communicate to the receiver
+    let val = String::from("Transmitting!"); // val is defined in the main thread
+    std::thread::spawn(move || {
+        transmitter.send(val).unwrap(); // take ownership of val and send message to main
+        // val is in the second thread now
+    });
+
+    let msg = receiver.recv().unwrap(); // wait for message and takes ownership of the value
+    // val (now msg) is in the main thread again
+    println!("{}", msg);
+```
+
+It is also possible to specify the queue size of messages by using
+```rust
+let (tx1, rc) = mpsc::sync_channel(1000); 
+// 1000 is the size of the queue (how many messages can handle).
+// When the limit is surpassed, sending messages becomes blocking until the queue is reduced
+```
+
+### Send and Sync
+The types that implement the Send trait can be moved across threads. Almost all Rust type are Send, except some exceptions like Rc. In that case, one must use Arc.
+The types that implement the Sync trait can be shared across threads.
+
+### Mutexes
+Protect a variable with a `Mutex` to avoid accessing it in multiple threads. Use `lock`` to block the value.
+```rust
+use std::sync::{Arc, Mutex};
+
+    let counter = Arc::new(Mutex::new(0)); // counter can only be accessed in only one thread
+    let mut handles = vec![];
+    for _ in 0..8 {
+        let c = Arc::clone(&counter);
+        let handle = std::thread::spawn(move || {
+            let mut num = c.lock().unwrap(); // c(counter) is locked, cannot be accessed in another thread
+            // if we lock counter again, we would have a deadlock
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("{}", counter.lock().unwrap()); // 8
+```
+
+### Rayon crate
+By default, it defines as many threads as the number of logical processors available. 
+```rust
+use rayon::prelude::*;
+use num::{BigUint, One};
+use std::time::Instant;
+
+fn multithreaded_factorial(num: u32) -> BigUint {
+    if num == 0 || num == 1 {
+        return BigUint::one()
+    } else {
+        // into_par_iter is given by Rayon and allows to calculate it in parallel
+        (1..=num).into_par_iter().map(BigUint::from).reduce(|| BigUint::one(), |acc, x| acc * x)
+    }
+}
+
+    let now = Instant::now();
+    multithreaded_factorial(50000);
+    println!("{:.2?}", now.elapsed());
 ```
 
 ## Working with big projects
