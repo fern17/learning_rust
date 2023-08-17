@@ -606,6 +606,35 @@ fn multithreaded_factorial(num: u32) -> BigUint {
     println!("{:.2?}", now.elapsed());
 ```
 
+## Async
+- Future trait: an asynchronous computation that can produce a value.
+- await: it is a bookmark to wait for a computation to be finished.
+- async: it is a block that calls a future
+- task: allows to spawn an async and have a back channel to the creating thread.
+```rust
+use async_std::{fs::File, io, prelude::*, task};
+
+async fn read_file(path: &str) -> io::Result<String> {
+    let mut file = File::open(path).await?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).await?;
+    Ok(contents)
+}
+
+fn main() {
+    let task = task::spawn(async { 
+        let result = read_file("Cargo.toml").await;
+        match result {
+            Ok(k) => println!("{}", k),
+            Err(e) => println!("Error reading from file: {}", e),
+        }
+    });
+    println!("task started");
+    task::block_on(task);
+    println!("task finished");
+}
+```
+
 ## Working with big projects
 ### Libraries:
 Import a Library
