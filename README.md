@@ -8,10 +8,7 @@ Multiple samples on how to write code with Rust
 - A Firehose of Rust for busy people who know some C++: [https://www.youtube.com/watch?v=FSyfZVuD32Y]
 
 ## TODO
-- lambdas and closures
 - multi threading and mutexes
-- trait system
-- fat pointer
 
 ## Installation
 ### Windows:
@@ -447,6 +444,68 @@ fn example_annotations<'a, 'b>(x: &'a str, y: &'b str) -> &'b str {
 } // a is lifetime for x, b is lifetime for y. The return value has to match the lifetime of one of the parameters
 
 let s: &'static str = "static lifetime that lives in the binary";
+```
+
+## Pointers
+### Box
+Allows to store a value in the heap instead of on the stack. The pointer to the heap data is still stored in the stack.
+```rust
+fn main() {
+    let t = (12, "eggs"); // t is in the stack (tuples are always in the stack)
+    let b = Box::new(t); // b is in the stack, the data itself is in the heap
+    println!("{:?}", b);
+
+    let x = 5;
+    let y = &x; // y is a reference
+    assert_eq!(5, x);
+    assert_eq!(5, *y); // desreferencing y
+
+    let x = 5;
+    let y = Box::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}
+```
+
+### Rc (reference counting) and Arc (atomic reference counting)
+Used when we need to have multiple pointers to the same data, and know how many pointers there are. Cloning a Rc does not copy the value, it creates another pointer to it and increments the reference counting to it.
+
+```rust
+use std::rc::Rc;
+
+    let s1 = Rc::new(String::from("Pointer"));
+    let s2 = s1.clone();
+    let s3 = s2.clone();
+```
+Arc is like Rc, but thread safe (it is atomic).
+
+### RefCell
+Allows to use the Interior Mutability Pattern, so that we can mutate data normally inmutable.
+The rules are enforced at runtime, so the compiler cannot help.
+RefCell gives two methods:
+- borrow: returns a smart pointer Ref<T>
+- borrow_mut returns RefMut<T>
+
+```rust
+use std::cell::RefCell;
+
+struct Flagger {
+    is_true: RefCell<bool>,
+}
+
+    let flag = Flagger{is_true: RefCell::new(true)};
+// either
+
+    let reference = flag.is_true.borrow(); // just a reference
+    println!("{}", reference);
+// or
+    // change an inmutable value
+    let mut mut_ref = flag.is_true.borrow_mut();
+    *mut_ref = false; // modifying
+    println!("{}", mut_ref);
+// cannot borrow twice, or we need to wrap is_true in a Rc<RefCell<bool>> and use 
+// let reference = Rc::new(flag.is_true.clone());
 ```
 
 ## Working with big projects
