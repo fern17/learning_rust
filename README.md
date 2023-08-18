@@ -446,6 +446,8 @@ fn example_annotations<'a, 'b>(x: &'a str, y: &'b str) -> &'b str {
 let s: &'static str = "static lifetime that lives in the binary";
 ```
 
+If you have a reference in a struct type, you must include the lifetime annotation. 
+
 ## Pointers
 ### Box
 Allows to store a value in the heap instead of on the stack. The pointer to the heap data is still stored in the stack.
