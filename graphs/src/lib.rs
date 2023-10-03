@@ -11,7 +11,7 @@ pub struct UndirectedGraph {
     adjacency_matrix: HashMap<String, Vec<(String, i32)>>,
 }
 
-pub trait Graph {
+pub trait AdjacencyMatrixGraph {
     fn new() -> Self;
     fn adjacency_matrix(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
 
@@ -46,7 +46,7 @@ pub trait Graph {
     }
 }
 
-impl Graph for DirectedGraph {
+impl AdjacencyMatrixGraph for DirectedGraph {
     fn new() -> DirectedGraph {
         DirectedGraph {
             adjacency_matrix: HashMap::new(),
@@ -58,7 +58,7 @@ impl Graph for DirectedGraph {
     }
 }
 
-impl Graph for UndirectedGraph {
+impl AdjacencyMatrixGraph for UndirectedGraph {
     fn new() -> UndirectedGraph {
         UndirectedGraph {
             adjacency_matrix: HashMap::new(),
