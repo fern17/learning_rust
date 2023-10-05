@@ -171,7 +171,7 @@ impl From<(u8, u8)> for Edge {
     }
 }
 
-pub fn depth_first_search(graph: &Graph, root: Vertex, objective: Vertex) -> Option<Vec<u8>> {
+pub fn depth_first_search(graph: &Graph, root: Vertex, target: Vertex) -> Option<Vec<u8>> {
     let mut visited: HashSet<Vertex> = HashSet::new();
     let mut history: Vec<u8> = Vec::new();
     let mut queue = VecDeque::new();
@@ -180,12 +180,36 @@ pub fn depth_first_search(graph: &Graph, root: Vertex, objective: Vertex) -> Opt
 
     while let Some(current_vertex) = queue.pop_front() {
         history.push(current_vertex.value());
-        if current_vertex == objective {
+        if current_vertex == target {
             return Some(history);
         }
         for neighbor in current_vertex.neighbors(graph).into_iter().rev() {
             if visited.insert(neighbor) {
                 queue.push_front(neighbor)
+            }
+        }
+    }
+
+    None
+}
+
+pub fn breadth_first_search(graph: &Graph, root: Vertex, target: Vertex) -> Option<Vec<u8>> {
+    let mut visited: HashSet<Vertex> = HashSet::new();
+    let mut history: Vec<u8> = Vec::new();
+    let mut queue = VecDeque::new();
+
+    visited.insert(root);
+    queue.push_back(root);
+
+    while let Some(current_vertex) = queue.pop_front() {
+        history.push(current_vertex.value());
+        if current_vertex == target {
+            return Some(history);
+        }
+        for neighbor in current_vertex.neighbors(graph) {
+            if !visited.contains(&neighbor) {
+                visited.insert(neighbor);
+                queue.push_back(neighbor)
             }
         }
     }
@@ -209,6 +233,37 @@ mod test_graph {
         );
         assert_eq!(
             depth_first_search(&graph, root.into(), objective.into()),
+            Some(correct)
+        );
+    }
+    #[test]
+    fn test_bfs_not_found() {
+        let vertices = vec![1, 2, 3, 4, 5, 6, 7];
+        let edges = vec![(1, 2), (1, 3), (2, 4), (2, 5), (3, 6), (3, 7)];
+        let root = 1;
+        let objective = 10;
+        let graph = Graph::new(
+            vertices.into_iter().map(|v| v.into()).collect(),
+            edges.into_iter().map(|e| e.into()).collect(),
+        );
+        assert_eq!(
+            breadth_first_search(&graph, root.into(), objective.into()),
+            None
+        );
+    }
+    #[test]
+    fn test_bfs_found() {
+        let vertices = vec![1, 2, 3, 4, 5, 6, 7];
+        let edges = vec![(1, 2), (1, 3), (2, 4), (2, 5), (3, 6), (3, 7)];
+        let root = 1;
+        let objective = 7;
+        let graph = Graph::new(
+            vertices.into_iter().map(|v| v.into()).collect(),
+            edges.into_iter().map(|e| e.into()).collect(),
+        );
+        let correct = vec![1, 2, 3, 4, 5, 6, 7];
+        assert_eq!(
+            breadth_first_search(&graph, root.into(), objective.into()),
             Some(correct)
         );
     }
