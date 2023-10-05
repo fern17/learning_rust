@@ -1,4 +1,5 @@
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::cmp::Ordering;
+use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
 
 #[derive(Debug)]
 pub struct NodeNotInGraph; // error type if node does not exist
@@ -266,5 +267,103 @@ mod test_graph {
             breadth_first_search(&graph, root.into(), objective.into()),
             Some(correct)
         );
+    }
+}
+
+// ---------------------------------------
+#[derive(Copy, Clone, Eq, PartialEq)]
+struct DijkstraState {
+    cost: usize,
+    position: usize,
+}
+
+impl Ord for DijkstraState {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other
+            .cost
+            .cmp(&self.cost)
+            .then_with(|| self.position.cmp(&other.position))
+    }
+}
+
+impl PartialOrd for DijkstraState {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+struct DijkstraEdge {
+    node: usize,
+    cost: usize,
+}
+
+fn shortest_path_dijkstra(
+    graph: &Vec<Vec<DijkstraEdge>>,
+    start: usize,
+    goal: usize,
+) -> Option<usize> {
+    let mut dist: Vec<_> = (0..graph.len()).map(|_| usize::MAX).collect();
+    let mut visited = BinaryHeap::new();
+    dist[start] = 0;
+    visited.push(DijkstraState {
+        cost: 0,
+        position: start,
+    });
+    while let Some(DijkstraState { cost, position }) = visited.pop() {
+        if position == goal {
+            return Some(cost);
+        }
+        if cost > dist[position] {
+            continue;
+        }
+
+        for edge in &graph[position] {
+            let next = DijkstraState {
+                cost: cost + edge.cost,
+                position: edge.node,
+            };
+            if next.cost < dist[next.position] {
+                visited.push(next);
+                dist[next.position] = next.cost;
+            }
+        }
+    }
+
+    None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_dijkstra() {
+        let graph = vec![
+            // Node 0
+            vec![
+                DijkstraEdge { node: 1, cost: 6 },
+                DijkstraEdge { node: 2, cost: 4 },
+                DijkstraEdge { node: 3, cost: 1 },
+            ],
+            // Node 1
+            vec![
+                DijkstraEdge { node: 0, cost: 6 },
+                DijkstraEdge { node: 2, cost: 3 },
+            ],
+            // Node 2
+            vec![
+                DijkstraEdge { node: 0, cost: 4 },
+                DijkstraEdge { node: 1, cost: 3 },
+                DijkstraEdge { node: 3, cost: 1 },
+            ],
+            // Node 3
+            vec![
+                DijkstraEdge { node: 0, cost: 1 },
+                DijkstraEdge { node: 2, cost: 1 },
+            ],
+        ];
+
+        assert_eq!(shortest_path_dijkstra(&graph, 0, 1), Some(5));
+        assert_eq!(shortest_path_dijkstra(&graph, 0, 2), Some(2));
     }
 }
